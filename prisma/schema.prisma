@@ -20,36 +20,64 @@ model User {
   password  String    @db.VarChar(100)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  roleId    String?   @unique
-  role      Role?     @relation(fields: [roleId], references: [id])
   userRole  UserRole?
+  services  Service[] @relation("ServiceProviders")
 }
 
 model Role {
-  id            String     @id @default(uuid())
-  name          RoleName   @unique
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
-  users         User[]
-  userRolesId   UserRole[] @relation("UserToRoleById")
-  userRolesName UserRole[] @relation("UserToRoleByName")
+  id        String     @id @default(uuid())
+  name      RoleName   @unique
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  userRoles UserRole[]
 }
 
 model UserRole {
   id        String   @id @default(uuid())
   userId    String   @unique
-  roleId    String   @unique
-  roleName  RoleName @unique
+  roleId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  user       User @relation(fields: [userId], references: [id])
-  roleById   Role @relation("UserToRoleById", fields: [roleId], references: [id])
-  roleByName Role @relation("UserToRoleByName", fields: [roleName], references: [name])
+  user User @relation(fields: [userId], references: [id])
+  role Role @relation(fields: [roleId], references: [id])
 }
 
 enum RoleName {
   ADMIN
   PROFESSIONAL
   USER
+}
+
+model Service {
+  id               String        @id @default(uuid())
+  name             String        @db.VarChar(100)
+  description      String        @db.VarChar(255)
+  currentPrice     Decimal       @db.Money()
+  promotionalPrice Decimal?      @db.Money()
+  duration         Int
+  globalService    Boolean?      @default(false)
+  providers        User[]        @relation("ServiceProviders")
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  appointments     Appointment[] @relation("AppointmentServices")
+}
+
+model Appointment {
+  id           String            @id @default(uuid())
+  serviceId    String
+  services     Service[]         @relation("AppointmentServices")
+  date         DateTime
+  duration     Int
+  status       StatusAppointment @default(SCHEDULED)
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  canceledAt   DateTime?
+  canceledById String?
+}
+
+enum StatusAppointment {
+  SCHEDULED
+  PROGRESS
+  CONCLUDED
 }
