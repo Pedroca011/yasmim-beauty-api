@@ -1,7 +1,6 @@
 import { IUser } from "../interfaces";
 import { userRepository } from "../repositories";
-import { HttpError } from "../utils";
-import bcrypt from "bcrypt";
+import { HttpError, PasswordHashed } from "../utils";
 
 class userService {
   async singUp({ name, email, password }: Omit<IUser, "role">) {
@@ -14,9 +13,14 @@ class userService {
         code: 409,
       });
 
-    const saltRounds: number = 10;
+    const passwordHashed = await PasswordHashed(password);
 
-    const passwordHashed = await bcrypt.hash(password, saltRounds);
+    if (passwordHashed === null)
+      throw new HttpError({
+        title: "BAD_REQUEST",
+        detail: "Email em uso",
+        code: 400,
+      });
 
     const createuser = await userRepository.createUser({
       name,
