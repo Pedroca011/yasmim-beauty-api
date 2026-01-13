@@ -18,7 +18,6 @@ class userService {
 
     const passwordHashed = await bcrypt.hash(password, saltRounds);
 
-    console.log(`[DADOS USER] ${name}, ${email}, ${passwordHashed}`);
     const createuser = await userRepository.createUser({
       name,
       email,
