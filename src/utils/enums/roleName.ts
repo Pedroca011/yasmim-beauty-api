@@ -1,5 +1,5 @@
 export enum IRoleName {
-    USER,
-    ADMIN,
-    PROFESSIONAL
+    USER = "USER",
+    ADMIN = "ADMIN",
+    PROFESSIONAL = "PROFESSIONAL"
 }
