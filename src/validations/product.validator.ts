@@ -7,6 +7,7 @@ const productBodySchema = z.object({
     .min(10, "A description deve ter pelo menos 10 caracteres.")
     .max(255, "A description deve ter pelo menos 255 caracteres."),
   currentPrice: z.coerce.number().positive(),
+  servicePromocional: z.boolean().optional(),
   promotionalPrice: z.coerce.number().positive().optional(),
   duration: z.number().positive(),
 });

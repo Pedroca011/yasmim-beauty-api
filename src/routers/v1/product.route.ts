@@ -15,4 +15,19 @@ _router.post("/",
   ProductController.createProduct
 );
 
+_router.get("/",
+  authorize([IRoleName.USER, IRoleName.PROFESSIONAL, IRoleName.ADMIN]),
+  ProductController.getAllProduct
+);
+
+_router.patch("/:productId", 
+  authorize([IRoleName.ADMIN]), 
+  ProductController.updateProduct
+);
+
+_router.delete("/:productId", 
+  authorize([IRoleName.ADMIN]), 
+  ProductController.deleteProduct
+);
+
 export const router = _router;
