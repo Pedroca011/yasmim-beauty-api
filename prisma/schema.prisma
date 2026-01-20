@@ -59,3 +59,23 @@ enum StatusAppointment {
   PROGRESS
   CONCLUDED
 }
+
+model OpeningHours {
+  id                     String    @id @default(uuid())
+  dayOfWeek              DayOfWeek
+  dayClosed              Boolean   @default(false)
+  openInMinutes          Int
+  opeIntervalInMinutes   Int
+  closeIntervalInMinutes Int
+  closeInMinutes         Int
+}
+
+enum DayOfWeek {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
