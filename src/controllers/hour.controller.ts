@@ -3,7 +3,7 @@ import { hourService } from "../services";
 import { Hour } from "../interfaces";
 
 class HourController {
-    async getAllDay(res: Response) {
+    async getAllDay(req: Request, res: Response) {
         const service: Hour[] = await hourService.getAllDay();
 
         return res.status(200).json({
@@ -12,8 +12,8 @@ class HourController {
         })
     }
 
-    async getByIdDay(req: Request, res: Response) { 
-        const dayId = req.params.id;
+    async getByIdDay(req: Request, res: Response) {
+        const { dayId } = req.params;
 
         const service = await hourService.getByIdDay(dayId);
 
@@ -24,7 +24,7 @@ class HourController {
     }
 
     async updateHour(req: Request, res: Response) {
-        const dayId = req.params.id;
+        const { dayId } = req.params;
         const dayBody = req.body;
 
         const service = await hourService.updateDay(dayId, dayBody);
