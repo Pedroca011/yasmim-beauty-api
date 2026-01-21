@@ -63,6 +63,7 @@ class ProductService {
   }
 
   async deleteProduct(productId: string) {
+    console.log(productId, '[PRODUCTID ]')
     const verifyProductExist = await productRepository.getByProductId(productId);
 
     if (!verifyProductExist)
@@ -74,12 +75,11 @@ class ProductService {
 
     const deleteProduct = await productRepository.deleteProduct(productId);
 
-    if (!deleteProduct)
-      throw new HttpError({
-        title: "BAD_REQUEST",
-        detail: "Erro ao atualizar produto.",
-        code: 400,
-      });
+    if (!deleteProduct) throw new HttpError({
+          title: "BAD_REQUEST",
+          detail: "Erro ao deletar produto.",
+          code: 400,
+        });
 
       return deleteProduct;
   }

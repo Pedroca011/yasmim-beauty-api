@@ -15,7 +15,7 @@ class ProductController {
     })
   }
 
-  async getAllProduct(res: Response) {
+  async getAllProduct(req: Request, res: Response) {
     const service = await productService.getAllProduct();
 
     return res.status(200).json({
@@ -26,7 +26,8 @@ class ProductController {
 
   async updateProduct(req: Request, res: Response) {
     const product: ProductUpdate = req.body;
-    const productId: string = req.params.id;
+    const { productId }: any = req.params;
+    console.log(productId, "[PRODUCTID]")
 
 
     if (!product) throw new HttpError({
@@ -43,7 +44,8 @@ class ProductController {
   }
 
   async deleteProduct(req: Request, res: Response) {
-    const productId = req.params.id;
+    const { productId }: any = req.params;
+    console.log(productId, '[PRODUCTID ]')
 
     const service = await productService.deleteProduct(productId);
 

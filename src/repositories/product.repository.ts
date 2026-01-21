@@ -27,7 +27,7 @@ class ProductRepository {
 
   async getByProductId(productId: string) {
     const getById = await PrismaAdapter.service.findFirst({
-      where: { name: productId },
+      where: { id: productId },
     });
 
     return getById;
