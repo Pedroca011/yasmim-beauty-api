@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { router as authRouter } from "./auth.route";
 import { router as productRouter } from "./product.route";
-import { router as hourRouter } from "./hour.route";
+import { router as DayRouter } from "./day.route";
 
 const _router: Router = Router({
   mergeParams: true,
@@ -22,6 +22,6 @@ _router.route("/v1/health-check").get(function (req: Request, res: Response) {
 // ROUTERS
 _router.use("/v1/auth", authRouter);
 _router.use("/v1/product", productRouter);
-_router.use("/v1/hour", hourRouter);
+_router.use("/v1/day", DayRouter);
 
 export const router = _router;

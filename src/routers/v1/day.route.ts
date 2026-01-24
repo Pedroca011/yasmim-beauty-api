@@ -1,5 +1,5 @@
 import { Router } from "express";
-import hourController from "../../controllers/hour.controller";
+import hourController from "../../controllers/day.controller";
 import { authorize } from "../../middlewares/authorized";
 import { IRoleName } from "../../utils/enums";
 
@@ -19,7 +19,7 @@ _router.get("/:dayId",
 
 _router.patch("/:dayId",
     authorize([IRoleName.ADMIN]),
-    hourController.updateHour
+    hourController.updateDay
 );
 
 export const router = _router;

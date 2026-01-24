@@ -23,7 +23,7 @@ class HourController {
         })
     }
 
-    async updateHour(req: Request, res: Response) {
+    async updateDay(req: Request, res: Response) {
         const { dayId } = req.params;
         const dayBody = req.body;
 
