@@ -2,6 +2,8 @@ import { Router } from "express";
 import hourController from "../../controllers/day.controller";
 import { authorize } from "../../middlewares/authorized";
 import { IRoleName } from "../../utils/enums";
+import { validate } from "../../middlewares";
+import { daySchema } from "../../validations";
 
 const _router: Router = Router({
     mergeParams: true,
@@ -18,6 +20,7 @@ _router.get("/:dayId",
 );
 
 _router.patch("/:dayId",
+    validate(daySchema),
     authorize([IRoleName.ADMIN]),
     hourController.updateDay
 );
