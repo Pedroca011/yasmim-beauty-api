@@ -1,6 +1,6 @@
 import { Hour, HourUpdate } from "../interfaces";
-import { hourRepository } from "../repositories";
-import { HttpError } from "../utils";
+import { appointmentRepository, hourRepository } from "../repositories";
+import { HttpError, dateToMinutes, hasCollision, minutesToHHmm } from "../utils";
 
 class HourService {
     async getAllDay() {
@@ -17,7 +17,7 @@ class HourService {
 
     }
 
-    async getByIdDay(dayId: string) {
+    async getByDayOfWeek(dayId: string, date: string, serviceDuration: number) {
 
         const getDay = await hourRepository.getByIdDay(dayId);
 
@@ -28,7 +28,45 @@ class HourService {
                 code: 404
             });
 
-        return getDay;
+        if (getDay.dayClosed === true) throw new HttpError({
+            title: 'BAD_REQUEST',
+            detail: 'Dia sem funcionamento',
+            code: 400
+        });
+
+
+        const appointmentsOfDay = await appointmentRepository.getByAppointmentDate(date) || [];
+
+        const busySlots = appointmentsOfDay.map(app => {
+            const start = dateToMinutes(new Date(app.date));
+            return {
+                start,
+                end: start + app.duration
+            };
+        });
+
+        const availableTimes: string[] = [];
+        const step = serviceDuration;
+
+        for (
+            let currentTime = getDay.openInMinutes;
+            currentTime + serviceDuration <= getDay.closeInMinutes;
+            currentTime += step
+        ) {
+            const slotEnd = currentTime + serviceDuration;
+
+            const isLunchTime = currentTime < getDay.closeIntervalInMinutes && slotEnd > getDay.openIntervalInMinutes;
+            if (isLunchTime) continue;
+
+            if (!hasCollision(currentTime, slotEnd, busySlots)) {
+                availableTimes.push(minutesToHHmm(currentTime));
+            }
+        }
+
+        return {
+            day: getDay.dayOfWeek,
+            availableTimes
+        };
     }
 
     async updateDay(dayId: string, day: HourUpdate) {

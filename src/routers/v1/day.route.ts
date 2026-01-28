@@ -16,7 +16,7 @@ _router.get("/",
 
 _router.get("/:dayId",
     authorize([IRoleName.ADMIN, IRoleName.PROFESSIONAL, IRoleName.USER]),
-    hourController.getByIdDay
+    hourController.getByDayOfWeek
 );
 
 _router.patch("/:dayId",

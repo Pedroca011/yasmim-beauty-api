@@ -4,6 +4,7 @@ import { IPassword } from "./password";
 import { TokenPayload } from "./tokenPayload";
 import { ProductCreate, ProductByName, ProductUpdate } from "./productInterface";
 import { Hour, HourUpdate } from "./hourInterface";
+import { ICreateAppointment, IUpdateAppointment } from "./appointmetInterface";
 
 export {
   ApiErrorInterface,
@@ -17,4 +18,6 @@ export {
   ProductUpdate,
   Hour,
   HourUpdate,
+  ICreateAppointment,
+  IUpdateAppointment,
 };

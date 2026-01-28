@@ -13,7 +13,7 @@ class HourRepository {
                 dayClosed: true,
                 openInMinutes: true,
                 closeInMinutes: true,
-                opeIntervalInMinutes: true,
+                openIntervalInMinutes: true,
                 closeIntervalInMinutes: true,
             },
         });
@@ -24,7 +24,7 @@ class HourRepository {
             dayClosed: row.dayClosed,
             openingInMinutes: row.openInMinutes,
             closeInMinutes: row.closeInMinutes,
-            openIntervalInMinutes: row.opeIntervalInMinutes,
+            openIntervalInMinutes: row.openIntervalInMinutes,
             closeIntervalInMinutes: row.closeIntervalInMinutes,
         }));
     }
@@ -38,7 +38,7 @@ class HourRepository {
                 dayClosed: true,
                 openInMinutes: true,
                 closeInMinutes: true,
-                opeIntervalInMinutes: true,
+                openIntervalInMinutes: true,
                 closeIntervalInMinutes: true,
             },
         });

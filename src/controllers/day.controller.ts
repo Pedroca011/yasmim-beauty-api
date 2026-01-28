@@ -12,10 +12,11 @@ class HourController {
         })
     }
 
-    async getByIdDay(req: Request, res: Response) {
+    async getByDayOfWeek(req: Request, res: Response) {
         const { dayId } = req.params;
+        const { date, serviceDuration } = req.body;
 
-        const service = await hourService.getByIdDay(dayId);
+        const service = await hourService.getByDayOfWeek(dayId, date, serviceDuration);
 
         return res.status(200).json({
             msg: 'Dia listado com sucesso',
