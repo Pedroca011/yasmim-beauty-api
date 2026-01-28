@@ -21,7 +21,7 @@ async function main() {
             dayOfWeek: day,
             dayClosed: false,
             openInMinutes: open,
-            opeIntervalInMinutes: startInt,
+            openIntervalInMinutes: startInt,
             closeIntervalInMinutes: endInt,
             closeInMinutes: close,
         };

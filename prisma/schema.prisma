@@ -13,13 +13,16 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  name      String   @db.VarChar(100)
-  email     String   @unique @db.VarChar(100)
-  password  String   @db.VarChar(100)
-  role      RoleName @default(USER)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                         String        @id @default(uuid())
+  name                       String        @db.VarChar(100)
+  email                      String        @unique @db.VarChar(100)
+  password                   String        @db.VarChar(100)
+  role                       RoleName      @default(USER)
+  createdAt                  DateTime      @default(now())
+  updatedAt                  DateTime      @updatedAt
+  appointmentsAsClient       Appointment[] @relation("ClientAppointments")
+  appointmentsAsProfessional Appointment[] @relation("ProfessionalAppointments")
+  canceledAppointments       Appointment[] @relation("CanceledBy")
 }
 
 enum RoleName {
@@ -42,22 +45,27 @@ model Service {
 }
 
 model Appointment {
-  id           String            @id @default(uuid())
-  serviceId    String
-  services     Service[]         @relation("AppointmentServices")
-  date         DateTime
-  duration     Int
-  status       StatusAppointment @default(SCHEDULED)
-  createdAt    DateTime          @default(now())
-  updatedAt    DateTime          @updatedAt
-  canceledAt   DateTime?
-  canceledById String?
+  id             String            @id @default(uuid())
+  clientId       String
+  professionalId String
+  canceledById   String?
+  client         User              @relation("ClientAppointments", fields: [clientId], references: [id])
+  professional   User              @relation("ProfessionalAppointments", fields: [professionalId], references: [id])
+  canceledBy     User?             @relation("CanceledBy", fields: [canceledById], references: [id])
+  services       Service[]         @relation("AppointmentServices")
+  date           DateTime
+  duration       Int
+  status         StatusAppointment @default(SCHEDULED)
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+  canceledAt     DateTime?
 }
 
 enum StatusAppointment {
   SCHEDULED
   PROGRESS
   CONCLUDED
+  CANCELED
 }
 
 model OpeningHours {
@@ -65,7 +73,7 @@ model OpeningHours {
   dayOfWeek              DayOfWeek
   dayClosed              Boolean   @default(false)
   openInMinutes          Int
-  opeIntervalInMinutes   Int
+  openIntervalInMinutes  Int
   closeIntervalInMinutes Int
   closeInMinutes         Int
   createdAt              DateTime  @default(now())
