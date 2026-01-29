@@ -1,59 +1,86 @@
 import PrismaAdapter from "../config/prisma";
 import { Hour, HourUpdate } from "../interfaces";
-import { IDayOfWeek } from "../utils/enums";
+import { DayOfWeek } from "../utils/enums";  // Assumindo enum DayOfWeek
 
 class HourRepository {
-    private prisma = PrismaAdapter.openingHours
+  private prisma = PrismaAdapter.openingHours;
 
-    async getAllHour(): Promise<Hour[]> {
-        const rows = await this.prisma.findMany({
-            select: {
-                id: true,
-                dayOfWeek: true,
-                dayClosed: true,
-                openInMinutes: true,
-                closeInMinutes: true,
-                openIntervalInMinutes: true,
-                closeIntervalInMinutes: true,
-            },
-        });
+  async getAllHour(): Promise<Hour[]> {
+    const rows = await this.prisma.findMany({
+      select: {
+        id: true,
+        dayOfWeek: true,
+        dayClosed: true,
+        openInMinutes: true,
+        closeInMinutes: true,
+        openIntervalInMinutes: true,
+        closeIntervalInMinutes: true,
+      },
+    });
 
-        return rows.map((row) => ({
-            id: row.id,
-            dayOfWeek: row.dayOfWeek as IDayOfWeek,
-            dayClosed: row.dayClosed,
-            openingInMinutes: row.openInMinutes,
-            closeInMinutes: row.closeInMinutes,
-            openIntervalInMinutes: row.openIntervalInMinutes,
-            closeIntervalInMinutes: row.closeIntervalInMinutes,
-        }));
-    }
+    return rows.map((row) => ({
+      id: row.id,
+      dayOfWeek: row.dayOfWeek as DayOfWeek,
+      dayClosed: row.dayClosed,
+      openInMinutes: row.openInMinutes,
+      closeInMinutes: row.closeInMinutes,
+      openIntervalInMinutes: row.openIntervalInMinutes,
+      closeIntervalInMinutes: row.closeIntervalInMinutes,
+    }));
+  }
 
-    async getByIdDay(hourId: string) {
-        const row = await PrismaAdapter.openingHours.findUnique({
-            where: { id: hourId },
-            select: {
-                id: true,
-                dayOfWeek: true,
-                dayClosed: true,
-                openInMinutes: true,
-                closeInMinutes: true,
-                openIntervalInMinutes: true,
-                closeIntervalInMinutes: true,
-            },
-        });
+  async getByIdDay(hourId: string): Promise<Hour | null> {
+    const row = await this.prisma.findUnique({
+      where: { id: hourId },
+      select: {
+        id: true,
+        dayOfWeek: true,
+        dayClosed: true,
+        openInMinutes: true,
+        closeInMinutes: true,
+        openIntervalInMinutes: true,
+        closeIntervalInMinutes: true,
+      },
+    });
 
-        return row;
-    }
+    if (!row) return null;
 
-    async updateDay(dayId: string, day: HourUpdate) {
-        const row = await this.prisma.update({
-            where: { id: dayId },
-            data: day,
-        });
+    return {
+      id: row.id,
+      dayOfWeek: row.dayOfWeek as DayOfWeek,
+      dayClosed: row.dayClosed,
+      openInMinutes: row.openInMinutes,
+      closeInMinutes: row.closeInMinutes,
+      openIntervalInMinutes: row.openIntervalInMinutes,
+      closeIntervalInMinutes: row.closeIntervalInMinutes,
+    };
+  }
 
-        return row;
-    }
+  async updateDay(dayId: string, day: HourUpdate): Promise<Hour> {
+    const updated = await this.prisma.update({
+      where: { id: dayId },
+      data: day,
+      select: {
+        id: true,
+        dayOfWeek: true,
+        dayClosed: true,
+        openInMinutes: true,
+        closeInMinutes: true,
+        openIntervalInMinutes: true,
+        closeIntervalInMinutes: true,
+      },
+    });
+
+    return {
+      id: updated.id,
+      dayOfWeek: updated.dayOfWeek as DayOfWeek,
+      dayClosed: updated.dayClosed,
+      openInMinutes: updated.openInMinutes,
+      closeInMinutes: updated.closeInMinutes,
+      openIntervalInMinutes: updated.openIntervalInMinutes,
+      closeIntervalInMinutes: updated.closeIntervalInMinutes,
+    };
+  }
 }
 
 export default new HourRepository();

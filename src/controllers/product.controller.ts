@@ -1,58 +1,81 @@
 import { Request, Response } from "express";
 import { productService } from "../services";
 import { ProductCreate, ProductUpdate } from "../interfaces";
-import { HttpError } from "../utils";
 
 class ProductController {
   async createProduct(req: Request, res: Response) {
-    const product: ProductCreate = req.body;
-
-    const service = await productService.createProduct(product);
-
-    return res.status(201).json({
-      msg: "Produto criado com sucesso",
-      product: service,
-    })
+    try {
+      const product: ProductCreate = req.body;
+      const created = await productService.createProduct(product);
+      return res.status(201).json({
+        msg: "Produto criado com sucesso",
+        product: created,
+      });
+    } catch (error: any) {
+      return res.status(error.code || 500).json({ detail: error.detail || error.message });
+    }
   }
 
   async getAllProduct(req: Request, res: Response) {
-    const service = await productService.getAllProduct();
-
-    return res.status(200).json({
-      msg: "Todos os produtos listados",
-      product: service,
-    })
+    try {
+      const products = await productService.getAllProduct();
+      return res.status(200).json({
+        msg: "Todos os produtos listados",
+        products, 
+      });
+    } catch (error: any) {
+      return res.status(error.code || 500).json({ detail: error.detail || error.message });
+    }
   }
 
   async updateProduct(req: Request, res: Response) {
-    const product: ProductUpdate = req.body;
-    const { productId }: any = req.params;
-    console.log(productId, "[PRODUCTID]")
+    try {
+      const product: ProductUpdate = req.body;
+      const { productId } = req.params;
 
+      if (!productId) {
+        throw new Error("productId é obrigatório"); 
+      }
 
-    if (!product) throw new HttpError({
-      title: "BAD_REQUEST",
-      detail: "Erro ao enviar produto.",
-      code: 400
-    })
-    const service = await productService.updateProduct(productId, product);
-
-    return res.status(200).json({
-      msg: "Atualizado com sucesso",
-      product: service,
-    });
+      const updated = await productService.updateProduct(productId, product);
+      return res.status(200).json({
+        msg: "Atualizado com sucesso",
+        product: updated,
+      });
+    } catch (error: any) {
+      return res.status(error.code || 500).json({ detail: error.detail || error.message });
+    }
   }
 
   async deleteProduct(req: Request, res: Response) {
-    const { productId }: any = req.params;
-    console.log(productId, '[PRODUCTID ]')
+    try {
+      const { productId } = req.params;
 
-    const service = await productService.deleteProduct(productId);
+      if (!productId) {
+        throw new Error("productId é obrigatório");
+      }
 
-    return res.status(200).json({
-      msg: "Deletado com sucesso",
-      product: service,
-    });
+      const deleted = await productService.deleteProduct(productId);
+      return res.status(200).json({
+        msg: "Deletado com sucesso",
+        product: deleted,
+      });
+    } catch (error: any) {
+      return res.status(error.code || 500).json({ detail: error.detail || error.message });
+    }
+  }
+
+  // Novo: Rota para getAllForBot (útil para testes ou chamada via API no bot)
+  async getAllForBot(req: Request, res: Response) {
+    try {
+      const formatted = await productService.getAllForBot();
+      return res.status(200).json({
+        msg: "Produtos formatados para bot",
+        formatted,
+      });
+    } catch (error: any) {
+      return res.status(error.code || 500).json({ detail: error.detail || error.message });
+    }
   }
 }
 

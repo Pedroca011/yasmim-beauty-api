@@ -1,10 +1,10 @@
-import { IUserSingIn } from "../interfaces";
+import { IUserSignIn } from "../interfaces";
 import { HttpError, PasswordCompare } from "../utils";
 import { userRepository } from "../repositories";
 import jwt from "jsonwebtoken";
 
 class AuthService {
-  async signIn({ email, password }: IUserSingIn) {
+  async signIn({ email, password }: IUserSignIn) {
     const user = await userRepository.getByEmail(email);
 
     if (!user)

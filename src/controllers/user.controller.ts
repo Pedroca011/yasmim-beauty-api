@@ -15,7 +15,7 @@ class UserController {
         code: 400,
       });
 
-    const createUser = await userService.singUp({ name, email, password });
+    const createUser = await userService.signUp({ name, email, password });
 
     return res.status(201).json({
       msg: "User criado com sucesso",

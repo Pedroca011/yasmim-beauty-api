@@ -1,15 +1,15 @@
 import PrismaAdapter from "../config/prisma";
-import { IUser, IUserCreate } from "../interfaces/user";
+import { IUserCreate } from "../interfaces/user";
 import Logging from "../library/Logging";
-import { HttpError } from "../utils";
 
 class userRepository {
+  private prisma = PrismaAdapter;
+
   async getByEmail(email: string) {
     try {
-      const user = await PrismaAdapter.user.findUnique({
-        where: { email: email },
+      const user = await this.prisma.user.findUnique({
+        where: { email },
       });
-
       return user;
     } catch (error) {
       Logging.warn("Erro ao procurar email.");
@@ -17,17 +17,26 @@ class userRepository {
     }
   }
 
-  async createUser({ name, email, passwordHashed }: IUserCreate) {
-    const createUser = await PrismaAdapter.user.create({
+  async createUser({ name, email, passwordHashed, phone, source }: IUserCreate & { source?: 'WEB' | 'WHATSAPP' }) {
+    const createdUser = await this.prisma.user.create({
       data: {
         name,
         email,
         password: passwordHashed,
         role: 'USER',
+        phone,
+        source: source || 'WEB',  // Adicionado: Default para 'WEB' se não fornecido
       },
     });
 
-    return createUser;
+    return createdUser;
+  }
+
+  async findByPhone(phone: string) {
+    const foundPhone = await this.prisma.user.findUnique({
+      where: { phone },
+    });
+    return foundPhone;
   }
 }
 

@@ -1,9 +1,9 @@
 import PrismaAdapter from "../config/prisma";
-import { ProductByName, ProductCreate, ProductUpdate } from "../interfaces";
+import { ProductByName, ProductCreate, ProductUpdate, Product } from "../interfaces";
 
 class ProductRepository {
-  async createProduct(product: ProductCreate) {
-    const create = await PrismaAdapter.service.create({
+  async createProduct(product: ProductCreate): Promise<Product> {
+    const created = await PrismaAdapter.service.create({
       data: {
         name: product.name,
         description: product.description,
@@ -14,56 +14,46 @@ class ProductRepository {
       },
     });
 
-    return create;
+    return created;
   }
 
-  async getByProductName(productName: ProductByName) {
-    const getByName = await PrismaAdapter.service.findFirst({
+  async getByProductName(productName: ProductByName): Promise<Product | null> {
+    const found = await PrismaAdapter.service.findFirst({
       where: { name: productName },
     });
 
-    return getByName;
+    return found;
   }
 
-  async getByProductId(productId: string) {
-    const getById = await PrismaAdapter.service.findFirst({
+  async getByProductId(productId: string): Promise<Product | null> {
+    const found = await PrismaAdapter.service.findUnique({  // Mudei para findUnique (melhor para id)
       where: { id: productId },
     });
 
-    return getById;
+    return found;
   }
 
-  async getAllProduct() {
-    const getAll = await PrismaAdapter.service.findMany({
-      select: {
-        id: true,
-        name: true,
-        description: true,
-        duration: true,
-        currentPrice: true,
-        servicePromotional: true,
-        promotionalPrice: true,
-      }
-    })
+  async getAllProduct(): Promise<Product[]> {
+    const allProducts = await PrismaAdapter.service.findMany();
 
-    return getAll;
+    return allProducts;
   }
 
-  async updateProduct(productId: string, product: ProductUpdate) {
-    const update = await PrismaAdapter.service.update({
+  async updateProduct(productId: string, product: ProductUpdate): Promise<Product> {
+    const updated = await PrismaAdapter.service.update({
       where: { id: productId },
       data: product,
     });
 
-    return update;
+    return updated;
   }
 
-  async deleteProduct(productId: string) {
-    const deleteProduct = await PrismaAdapter.service.delete({
+  async deleteProduct(productId: string): Promise<Product> {
+    const deleted = await PrismaAdapter.service.delete({
       where: { id: productId },
     });
 
-    return deleteProduct;
+    return deleted;
   }
 }
 

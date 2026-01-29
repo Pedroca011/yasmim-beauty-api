@@ -101,3 +101,13 @@ enum DayOfWeek {
   SATURDAY
   SUNDAY
 }
+
+model BotSession {
+  id        String   @id @default(uuid())
+  remoteJid String   @unique // Ex: "5511999999999@s.whatsapp.net"
+  step      String // Ex: "service", "date", "time"
+  data      Json? // Armazena dados temporários como { serviceId: "xxx", date: "2026-02-01" }
+  expiresAt DateTime // Para auto-expiração
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

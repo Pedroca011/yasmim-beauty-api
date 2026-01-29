@@ -6,9 +6,7 @@ class AppointmentController {
         try {
             const { clientId } = req.params;
             const { professionalId, serviceIds, date, duration } = req.body;
-            console.log(professionalId, serviceIds, date, duration)
 
-            // Validação básica (pode expandir)
             if (!professionalId || !serviceIds?.length || !date || !duration) {
                 return res.status(400).json({
                     title: 'DADOS INVÁLIDOS',
@@ -73,24 +71,24 @@ class AppointmentController {
     }
 
     async cancel(req: Request, res: Response) {
-        try {
-            const { id } = req.params;
-            const userId = req.user.id;
+        // try {
+        //     const { id } = req.params;
+        //     const userId = req.user.id;
 
-            const canceledAppointment = await appointmentService.cancel(id, userId);
-            return res.json({
-                msg: "Agendamento cancelado com sucesso",
-                appointment: canceledAppointment
-            });
-        } catch (error: any) {
-            return res.status(error.code || 500).json({ detail: error.detail || error.message });
-        }
+        //     const canceledAppointment = await appointmentService.cancel(id, userId);
+        //     return res.json({
+        //         msg: "Agendamento cancelado com sucesso",
+        //         appointment: canceledAppointment
+        //     });
+        // } catch (error: any) {
+        //     return res.status(error.code || 500).json({ detail: error.detail || error.message });
+        // }
     }
 
     async delete(req: Request, res: Response) {
         try {
             const { id } = req.params;
-            await appointmentService.getOne(id); // Verifica existência
+            await appointmentService.getOne(id);
             await appointmentService.delete(id);
             return res.status(204).send();
         } catch (error: any) {

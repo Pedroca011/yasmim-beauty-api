@@ -19,3 +19,11 @@ export interface ProductUpdate {
 }
 
 export type ProductByName = ProductCreate["name"];
+
+export interface Product extends ProductCreate {
+  id: string;
+}
+
+export interface BotFormattedProducts {
+  formattedString: string; 
+}

@@ -1,19 +1,29 @@
-import { IDayOfWeek } from "../utils/enums";
+import { DayOfWeek } from "../utils/enums";
 
 export interface Hour {
-    id: string;
-    dayOfWeek: IDayOfWeek;
-    dayClosed: boolean;
-    openingInMinutes: number;
-    closeInMinutes: number;
-    openIntervalInMinutes: number;
-    closeIntervalInMinutes: number;
+  id: string;
+  dayOfWeek: DayOfWeek;
+  dayClosed: boolean;
+  openInMinutes: number;
+  closeInMinutes: number;
+  openIntervalInMinutes: number; 
+  closeIntervalInMinutes: number;
 }
 
 export interface HourUpdate {
-    dayClosed?: boolean;
-    openingInMinutes?: number;
-    closeInMinutes?: number;
-    openIntervalInMinutes?: number;
-    closeIntervalInMinutes?: number;
+  dayClosed?: boolean;
+  openInMinutes?: number;
+  closeInMinutes?: number;
+  openIntervalInMinutes?: number;
+  closeIntervalInMinutes?: number;
+}
+
+export interface AvailableTimesResponse {
+  day: DayOfWeek;
+  availableTimes: string[];
+}
+
+
+export interface BotFormattedHours {
+  formattedString: string; 
 }

@@ -1,5 +1,5 @@
 import { IRoleName } from "./roleName";
-import { IDayOfWeek } from "./hour";
+import { DayOfWeek } from "./hour";
 import { StatusAppointment } from "./statusAppointment";
 
-export { IRoleName, IDayOfWeek, StatusAppointment };
+export { IRoleName, DayOfWeek, StatusAppointment };
