@@ -13,13 +13,16 @@ datasource db {
 }
 
 model User {
-  id                         String        @id @default(uuid())
-  name                       String        @db.VarChar(100)
-  email                      String        @unique @db.VarChar(100)
-  password                   String        @db.VarChar(100)
-  role                       RoleName      @default(USER)
-  createdAt                  DateTime      @default(now())
-  updatedAt                  DateTime      @updatedAt
+  id        String     @id @default(uuid())
+  name      String     @db.VarChar(100)
+  email     String?    @unique @db.VarChar(100)
+  phone     String?    @unique
+  password  String?    @db.VarChar(100)
+  role      RoleName   @default(USER)
+  source    UserSource @default(WEB)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
   appointmentsAsClient       Appointment[] @relation("ClientAppointments")
   appointmentsAsProfessional Appointment[] @relation("ProfessionalAppointments")
   canceledAppointments       Appointment[] @relation("CanceledBy")
@@ -31,13 +34,19 @@ enum RoleName {
   USER
 }
 
+enum UserSource {
+  WEB
+  WHATSAPP
+  APP
+}
+
 model Service {
   id                 String        @id @default(uuid())
   name               String        @db.VarChar(100)
   description        String        @db.VarChar(255)
-  currentPrice       Decimal       @db.Money()
+  currentPrice       Decimal       @db.Decimal(10, 2)
   servicePromotional Boolean?      @default(false)
-  promotionalPrice   Decimal?      @db.Money()
+  promotionalPrice   Decimal?      @db.Decimal(10, 2)
   duration           Int
   createdAt          DateTime      @default(now())
   updatedAt          DateTime      @updatedAt
@@ -45,20 +54,23 @@ model Service {
 }
 
 model Appointment {
-  id             String            @id @default(uuid())
+  id             String  @id @default(uuid())
   clientId       String
   professionalId String
   canceledById   String?
-  client         User              @relation("ClientAppointments", fields: [clientId], references: [id])
-  professional   User              @relation("ProfessionalAppointments", fields: [professionalId], references: [id])
-  canceledBy     User?             @relation("CanceledBy", fields: [canceledById], references: [id])
-  services       Service[]         @relation("AppointmentServices")
-  date           DateTime
-  duration       Int
-  status         StatusAppointment @default(SCHEDULED)
-  createdAt      DateTime          @default(now())
-  updatedAt      DateTime          @updatedAt
-  canceledAt     DateTime?
+
+  client       User  @relation("ClientAppointments", fields: [clientId], references: [id])
+  professional User  @relation("ProfessionalAppointments", fields: [professionalId], references: [id])
+  canceledBy   User? @relation("CanceledBy", fields: [canceledById], references: [id])
+
+  services Service[] @relation("AppointmentServices")
+
+  date       DateTime
+  duration   Int
+  status     StatusAppointment @default(SCHEDULED)
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
+  canceledAt DateTime?
 }
 
 enum StatusAppointment {
