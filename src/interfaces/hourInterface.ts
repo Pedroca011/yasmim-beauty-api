@@ -21,6 +21,7 @@ export interface HourUpdate {
 export interface AvailableTimesResponse {
   day: DayOfWeek;
   availableTimes: string[];
+  dayClosed?: boolean;
 }
 
 

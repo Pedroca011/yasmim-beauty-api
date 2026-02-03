@@ -1,6 +1,7 @@
 import { Hour, HourUpdate, AvailableTimesResponse, BotFormattedHours } from "../interfaces";
 import { appointmentRepository, hourRepository } from "../repositories";
 import { HttpError, dateToMinutes, hasCollision, minutesToHHmm } from "../utils";
+import { DayOfWeek } from "../utils/enums";
 
 class HourService {
     async getAllDay(): Promise<Hour[]> {
@@ -17,7 +18,21 @@ class HourService {
         return allDays;
     }
 
-    // Novo método para bot: Retorna todos os dias formatados em texto para WhatsApp
+    async getByDayOfWeekEnum(dayOfWeek: DayOfWeek, date: string, serviceDuration: number, professionalId?: string) {
+        // Busca o OpeningHours pelo dayOfWeek (adicione método no repository: getByDayOfWeek)
+        const hours = await hourRepository.getByDayOfWeek(dayOfWeek);
+
+        if (!hours) {
+            throw new HttpError({
+                title: 'NOT_FOUND',
+                detail: 'Horários não configurados para este dia',
+                code: 404,
+            });
+        }
+
+        // Reusa lógica de getByDayOfWeek (ajuste para usar hours.id internamente se necessário)
+        return await this.getByDayOfWeek(hours.id, date, serviceDuration, professionalId);
+    }
     async getAllForBot(): Promise<BotFormattedHours> {
         const allDays = await this.getAllDay();
         let formattedString = 'Horários de funcionamento:\n\n';
@@ -49,11 +64,11 @@ class HourService {
         }
 
         if (getDay.dayClosed) {
-            throw new HttpError({
-                title: 'BAD_REQUEST',
-                detail: 'Dia sem funcionamento',
-                code: 400,
-            });
+            return {
+                day: getDay.dayOfWeek,
+                availableTimes: [],
+                dayClosed: true,
+            };
         }
 
         // Filtra appointments por data e professional (para bot/web)
@@ -77,7 +92,6 @@ class HourService {
         ) {
             const slotEnd = currentTime + serviceDuration;
 
-            // Verifica intervalo de almoço
             const isLunchTime = currentTime < getDay.closeIntervalInMinutes && slotEnd > getDay.openIntervalInMinutes;
             if (isLunchTime) continue;
 
@@ -86,18 +100,10 @@ class HourService {
             }
         }
 
-        // Para bot: Se não houver horários, lance erro amigável
-        if (availableTimes.length === 0) {
-            throw new HttpError({
-                title: 'NO_AVAILABILITY',
-                detail: 'Nenhum horário disponível para este dia',
-                code: 400,
-            });
-        }
-
         return {
             day: getDay.dayOfWeek,
             availableTimes,
+            dayClosed: false,
         };
     }
 

@@ -8,7 +8,7 @@ class ProductService {
 
     if (verifyProductExist) {
       throw new HttpError({
-        title: "CONFLICT",  
+        title: "CONFLICT",
         detail: "Nome existente",
         code: 409,
       });
@@ -39,6 +39,18 @@ class ProductService {
     }
 
     return products;
+  }
+
+  async getById(id: string): Promise<Product> {
+    const product = await productRepository.getByProductId(id);
+    if (!product) {
+      throw new HttpError({
+        title: 'NOT_FOUND',
+        detail: 'Produto não encontrado',
+        code: 404,
+      });
+    }
+    return product;
   }
 
   async getAllForBot(): Promise<BotFormattedProducts> {

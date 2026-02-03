@@ -5,6 +5,7 @@ import { TokenPayload } from "./tokenPayload";
 import { ProductCreate, ProductByName, ProductUpdate, BotFormattedProducts, Product } from "./productInterface";
 import { Hour, HourUpdate, AvailableTimesResponse, BotFormattedHours } from "./hourInterface";
 import { ICreateAppointment, IUpdateAppointment } from "./appointmetInterface";
+import { BotSessionData } from "./botInterface";
 
 export {
   ApiErrorInterface,
@@ -25,4 +26,5 @@ export {
   BotFormattedHours,
   ICreateAppointment,
   IUpdateAppointment,
+  BotSessionData,
 };

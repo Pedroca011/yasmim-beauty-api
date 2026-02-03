@@ -3,4 +3,4 @@ import productRepository from "./product.repository";
 import hourRepository from "./hour.repository";
 import appointmentRepository from "./appointment.repository";
 
-export { userRepository, productRepository, hourRepository, appointmentRepository };
+export { userRepository, productRepository, hourRepository, appointmentRepository, };

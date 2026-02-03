@@ -81,6 +81,33 @@ class HourRepository {
       closeIntervalInMinutes: updated.closeIntervalInMinutes,
     };
   }
+
+  async getByDayOfWeek(dayOfWeek: DayOfWeek): Promise<Hour | null> {
+    const row = await this.prisma.findFirst({
+      where: { dayOfWeek },
+      select: {
+        id: true,
+        dayOfWeek: true,
+        dayClosed: true,
+        openInMinutes: true,
+        closeInMinutes: true,
+        openIntervalInMinutes: true,
+        closeIntervalInMinutes: true,
+      },
+    });
+
+    if (!row) return null;
+
+    return {
+      id: row.id,
+      dayOfWeek: row.dayOfWeek as DayOfWeek,
+      dayClosed: row.dayClosed,
+      openInMinutes: row.openInMinutes,
+      closeInMinutes: row.closeInMinutes,
+      openIntervalInMinutes: row.openIntervalInMinutes,
+      closeIntervalInMinutes: row.closeIntervalInMinutes,
+    };
+  }
 }
 
 export default new HourRepository();

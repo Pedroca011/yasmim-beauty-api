@@ -73,7 +73,7 @@ const StartServer = async () => {
   });
 
   //YOUR SERVER LISTEN
-  app.listen(config.port, () =>
+  app.listen(3333, '0.0.0.0', () =>
     Logging.info(`Server is running on port ${config.port}.`)
   );
 };

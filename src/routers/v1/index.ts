@@ -3,6 +3,7 @@ import { router as authRouter } from "./auth.route";
 import { router as productRouter } from "./product.route";
 import { router as DayRouter } from "./day.route";
 import { router as AppointmentRouter } from "./appointment.route";
+import { router as BotRouter } from "./bot.route";
 
 const _router: Router = Router({
   mergeParams: true,
@@ -25,5 +26,7 @@ _router.use("/v1/auth", authRouter);
 _router.use("/v1/product", productRouter);
 _router.use("/v1/day", DayRouter);
 _router.use("/v1/appointment", AppointmentRouter);
+_router.use("/v1", BotRouter);
+
 
 export const router = _router;
