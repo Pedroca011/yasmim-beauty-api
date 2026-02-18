@@ -3,8 +3,6 @@ import { BotController } from '../../controllers';
 
 const _router = Router();
 
-_router.post('/handler', BotController.handleBot);
-
 _router.post('/bot-webhook', BotController.handleWebhook);
 
 export const router = _router;

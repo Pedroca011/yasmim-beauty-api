@@ -35,7 +35,7 @@ class AppointmentService {
     }
 
     async getOne(id: string) {
-        const appointment = await appointmentRepository.findById(id);
+        const appointment = await appointmentRepository.findAppointmentById(id);
         if (!appointment) throw new Error("Agendamento não encontrado");
         return appointment;
     }
@@ -68,7 +68,7 @@ class AppointmentService {
     }
 
     async delete(id: string) {
-        return await appointmentRepository.delete(id);
+        return await appointmentRepository.deleteAppointment(id);
     }
 }
 
