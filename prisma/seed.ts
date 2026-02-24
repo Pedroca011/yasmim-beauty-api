@@ -8,18 +8,19 @@ async function main() {
 
     const openingHoursData = days.map((day) => {
 
-        let open = 540;
-        let close = 1080;
-        let startInt = 720;
-        let endInt = 780;
+        let open = 480;
+        let close = 1020;
+        let startInt = 660;
+        let endInt = 720;
+        let dayCloesed = false;
 
         if (day === DayOfWeek.SUNDAY) {
-            close = 900;
+            dayCloesed = true;
         }
 
         return {
             dayOfWeek: day,
-            dayClosed: false,
+            dayClosed: dayCloesed,
             openInMinutes: open,
             openIntervalInMinutes: startInt,
             closeIntervalInMinutes: endInt,

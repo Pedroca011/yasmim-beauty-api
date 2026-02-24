@@ -34,20 +34,7 @@ class BotController {
         });
 
         if (response) {
-          if (typeof response === "string") {
-            await whatsappService.sendText(remoteJid, response);
-          } else if (
-            typeof response === "object" &&
-            response.type === "buttons"
-          ) {
-            await whatsappService.sendButtons(
-              remoteJid,
-              response.title,
-              response.description,
-              response.footer,
-              response.buttons,
-            );
-          }
+          await whatsappService.sendText(remoteJid, response);
         }
       } else {
         console.log(
