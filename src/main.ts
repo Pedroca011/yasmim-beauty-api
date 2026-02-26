@@ -6,28 +6,33 @@ import { router as v1 } from "./routers/v1";
 
 const app = express();
 
-app.set("trust proxy", true);  
+app.set("trust proxy", true);
 
 const StartServer = async () => {
-  app.use(cors({
-    origin: "*", 
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "Accept", "Origin", "X-Requested-With"],
-    credentials: true,
-    optionsSuccessStatus: 200,
-    preflightContinue: false, 
-  }));
-
-  app.options("*", cors()); 
-
+  app.use(
+    cors({
+      origin: "*",
+      methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+      allowedHeaders: [
+        "Content-Type",
+        "Authorization",
+        "Accept",
+        "Origin",
+        "X-Requested-With",
+      ],
+      credentials: true,
+      optionsSuccessStatus: 200,
+      preflightContinue: false,
+    }),
+  );
 
   app.use((req, res, next) => {
     Logging.info(
-      `Incoming -> Method: [${req.method}] - Url: [${req.url}] - IP: [${req.socket.remoteAddress}]`
+      `Incoming -> Method: [${req.method}] - Url: [${req.url}] - IP: [${req.socket.remoteAddress}]`,
     );
     res.on("finish", () => {
       Logging.info(
-        `Incoming -> Method: [${req.method}] - Url: [${req.url}] IP: [${req.socket.remoteAddress}] - Status: [${res.statusCode}]`
+        `Incoming -> Method: [${req.method}] - Url: [${req.url}] IP: [${req.socket.remoteAddress}] - Status: [${res.statusCode}]`,
       );
     });
     next();
@@ -54,13 +59,11 @@ const StartServer = async () => {
     });
   });
 
-
   app.use((req, res) => {
     const error = new Error("not found");
     Logging.error(error);
     return res.status(404).json({ success: false, message: error.message });
   });
-
 
   app.use((err: any, req: any, res: any, next: any) => {
     Logging.error(err.stack || err);
@@ -77,7 +80,7 @@ const StartServer = async () => {
   });
 
   const port: any = process.env.PORT || 3333;
-  app.listen(port, "0.0.0.0", () => { 
+  app.listen(port, "0.0.0.0", () => {
     Logging.info(`Server is running on port ${port}.`);
   });
 };
