@@ -22,11 +22,11 @@ _router.route("/v1/health-check").get(function (req: Request, res: Response) {
 });
 
 // ROUTERS
-_router.use("/v1/auth", authRouter);
-_router.use("/v1/product", productRouter);
-_router.use("/v1/day", DayRouter);
-_router.use("/v1/appointment", AppointmentRouter);
-_router.use("/v1", BotRouter);
+_router.use("/auth", authRouter);
+_router.use("/product", productRouter);
+_router.use("/day", DayRouter);
+_router.use("/appointment", AppointmentRouter);
+_router.use("/bot", BotRouter);
 
 
 export const router = _router;
