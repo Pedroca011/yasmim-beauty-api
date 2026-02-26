@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors"; // ← novo import
 import Logging from "./library/Logging";
 import HttpError from "./utils/httpError";
 import { router as v1 } from "./routers/v1";
@@ -7,13 +8,29 @@ import { config } from "./config/config";
 const app = express();
 
 const StartServer = async () => {
+  app.use(
+    cors({
+      origin: "*",
+      methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+      allowedHeaders: [
+        "Content-Type",
+        "Authorization",
+        "Accept",
+        "Origin",
+        "X-Requested-With",
+      ],
+      credentials: true,
+      optionsSuccessStatus: 200,
+    }),
+  );
+
   app.use((req, res, next) => {
     Logging.info(
-      `Incomming -> Method: [${req.method}] - Url: [${req.url}] - IP: [${req.socket.remoteAddress}]`
+      `Incoming -> Method: [${req.method}] - Url: [${req.url}] - IP: [${req.socket.remoteAddress}]`,
     );
     res.on("finish", () => {
       Logging.info(
-        `Incomming -> Method: [${req.method}] - Url: [${req.url}] IP: [${req.socket.remoteAddress}] - Status: [${res.statusCode}]`
+        `Incoming -> Method: [${req.method}] - Url: [${req.url}] IP: [${req.socket.remoteAddress}] - Status: [${res.statusCode}]`,
       );
     });
     next();
@@ -22,40 +39,25 @@ const StartServer = async () => {
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
 
-  //RULES OF OUR APIS
-  app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header(
-      "Access-Control-Allow-Headers",
-      "Origin,X-Requested-with,Content-Type,Accept,Authorization"
-    );
-
-    if (req.method == "OPTIONS") {
-      res.header("Access-Control-Allow-Methods", "PUT,POST,PATCH,DELETE,GET");
-      return res.status(200).json({});
-    }
-    next();
-  });
-
-  //API ROUTES WITH VERSION
   app.use("/api", v1);
 
-  //API MAIN ROUTER "/"
+  app.get("/health", (_, res) => {
+    res.status(200).json({ status: "ok", message: "API running" });
+  });
+
   app.get("/", (_, res) => {
     res.status(200).json({
       success: true,
-      message: "Api test runner...",
+      message: "Api Yasmim runner...",
     });
   });
 
-  //API ERROR HANDLING
   app.use((req, res, next) => {
     const error = new Error("not found");
     Logging.error(error);
     return res.status(404).json({ success: false, message: error.message });
   });
 
-  //HANDEL ALL ERROR THROW BY CONTROLLERS
   app.use(function (err: any, req: any, res: any, next: any) {
     Logging.error(err.stack);
 
@@ -72,10 +74,8 @@ const StartServer = async () => {
     }
   });
 
-  //YOUR SERVER LISTEN
-  app.listen(process.env.PORT || 3333, () =>
-    Logging.info(`Server is running on port ${process.env.PORT || 3333}.`)
-  );
+  const port = process.env.PORT || 3333;
+  app.listen(port, () => Logging.info(`Server is running on port ${port}.`));
 };
 
 StartServer();

@@ -5,4 +5,11 @@ import HourController from "./day.controller";
 import AppointmentController from "./appointment.controller";
 import BotController from "./bot.controller";
 
-export { UserController, AuthController, ProductController, HourController, AppointmentController, BotController };
+export {
+  UserController,
+  AuthController,
+  ProductController,
+  HourController,
+  AppointmentController,
+  BotController,
+};
