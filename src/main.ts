@@ -36,7 +36,7 @@ const StartServer = async () => {
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
 
-  app.use("/api/v1", v1);
+  app.use("/api", v1);
 
   app.get("/health", (req, res) => {
     res.status(200).json({
