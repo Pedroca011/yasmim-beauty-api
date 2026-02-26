@@ -73,8 +73,8 @@ const StartServer = async () => {
   });
 
   //YOUR SERVER LISTEN
-  app.listen(3333, '0.0.0.0', () =>
-    Logging.info(`Server is running on port ${config.port}.`)
+  app.listen(process.env.PORT || 3333, () =>
+    Logging.info(`Server is running on port ${process.env.PORT || 3333}.`)
   );
 };
 
