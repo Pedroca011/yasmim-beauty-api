@@ -1,23 +1,26 @@
 import express from "express";
-import cors from "cors";  // ← adicione isso
+import cors from "cors";
 import Logging from "./library/Logging";
 import HttpError from "./utils/httpError";
 import { router as v1 } from "./routers/v1";
-// import { config } from "./config/config";  // se precisar
 
 const app = express();
 
+app.set("trust proxy", true);  
+
 const StartServer = async () => {
-  // CORS global ANTES de qualquer coisa (resolve preflight OPTIONS automaticamente)
   app.use(cors({
-    origin: "*",  // mude para origens específicas em prod: ["https://seu-frontend.com"]
+    origin: "*", 
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "Accept", "Origin", "X-Requested-With"],
-    credentials: true,  // se usar cookies/auth com credentials
-    optionsSuccessStatus: 200  // compatibilidade
+    credentials: true,
+    optionsSuccessStatus: 200,
+    preflightContinue: false, 
   }));
 
-  // Logging (depois do CORS para capturar tudo)
+  app.options("*", cors()); 
+
+
   app.use((req, res, next) => {
     Logging.info(
       `Incoming -> Method: [${req.method}] - Url: [${req.url}] - IP: [${req.socket.remoteAddress}]`
@@ -33,18 +36,17 @@ const StartServer = async () => {
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
 
-  // Remova completamente o handler manual de CORS/OPTIONS que você tinha
-  // (não precisa mais dele com cors())
-
-  // Rotas
   app.use("/api", v1);
 
-  // Adicione uma rota de teste simples (para confirmar que o server responde)
   app.get("/health", (req, res) => {
-    res.status(200).json({ status: "ok", message: "API is alive" });
+    res.status(200).json({
+      status: "ok",
+      message: "API is alive",
+      envPort: process.env.PORT,
+      nodeEnv: process.env.NODE_ENV,
+    });
   });
 
-  // Rota raiz
   app.get("/", (_, res) => {
     res.status(200).json({
       success: true,
@@ -52,33 +54,32 @@ const StartServer = async () => {
     });
   });
 
-  // Catch-all 404 (último middleware)
-  app.use((req, res, next) => {
+
+  app.use((req, res) => {
     const error = new Error("not found");
     Logging.error(error);
     return res.status(404).json({ success: false, message: error.message });
   });
 
-  // Error handler (último)
-  app.use(function (err: any, req: any, res: any, next: any) {
-    Logging.error(err.stack);
+
+  app.use((err: any, req: any, res: any, next: any) => {
+    Logging.error(err.stack || err);
     if (err instanceof HttpError) {
       return err.sendError(res);
-    } else {
-      return res.status(500).json({
-        error: {
-          title: "general_error",
-          detail: "An error occurred, Please retry again later",
-          code: 500,
-        },
-      });
     }
+    return res.status(500).json({
+      error: {
+        title: "general_error",
+        detail: "An error occurred, Please retry again later",
+        code: 500,
+      },
+    });
   });
 
-  const port = process.env.PORT || 3333;
-  app.listen(port, () =>
-    Logging.info(`Server is running on port ${port}.`)
-  );
+  const port: any = process.env.PORT || 3333;
+  app.listen(port, "0.0.0.0", () => { 
+    Logging.info(`Server is running on port ${port}.`);
+  });
 };
 
 StartServer();
