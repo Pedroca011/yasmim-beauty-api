@@ -7,8 +7,8 @@ const _router: Router = Router({
   mergeParams: true,
 });
 
-_router.post("/sing-up", validate(userSchema), UserController.singUp);
+_router.post("/sign-up", validate(userSchema), UserController.singUp);
 
-_router.post("/sing-in", validate(authSchema), AuthController.signIn);
+_router.post("/sign-in", validate(authSchema), AuthController.signIn);
 
 export const router = _router;
