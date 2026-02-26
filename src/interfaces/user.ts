@@ -3,6 +3,7 @@ import { IRoleName } from "../utils/enums";
 export type UserSource = 'WEB' | 'WHATSAPP' | 'APP';
 
 export interface IUser {
+  id?: string;
   name: string;
   email?: string;
   password?: string;
