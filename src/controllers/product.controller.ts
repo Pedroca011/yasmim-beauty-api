@@ -32,7 +32,6 @@ class ProductController {
     try {
       const product: ProductUpdate = req.body;
       const { productId } = req.params;
-
       if (!productId) {
         throw new Error("productId é obrigatório"); 
       }

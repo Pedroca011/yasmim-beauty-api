@@ -84,6 +84,7 @@ class ProductService {
 
     const updated = await productRepository.updateProduct(productId, product);
 
+
     if (!updated) {
       throw new HttpError({
         title: "BAD_REQUEST",
