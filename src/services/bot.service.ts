@@ -41,7 +41,6 @@ class BotService {
 
     const phone = remoteJid.split("@")[0];
     const adminPhone = process.env.ADMIN_PHONE;
-    // const adminPhone = "5511954121619";
     // Verifica se é o admin e se mandou "admin"
     if (phone === adminPhone && normalizedMessage === "admin") {
       const upcoming = await appointmentRepository.findUpcomingAppointments();
@@ -134,7 +133,6 @@ class BotService {
       case "start":
         console.log("[BOT SERVICE] Entrou no case agendar/start");
         const products = await productService.getAllProduct();
-        console.log("[BOT SERVICE] Produtos carregados:", products.length);
         const list = products
           .map(
             (p, i) =>
@@ -161,7 +159,6 @@ class BotService {
         if (sessionData.step !== "initial") {
           if (sessionData.step === "service") {
             if (normalizedMessage.match(/^\d+(,\d+)*$/)) {
-              console.log("[BOT SERVICE] Entrou no step service");
               const serviceIndexes = normalizedMessage
                 .split(",")
                 .map((n) => parseInt(n, 10) - 1);
@@ -201,7 +198,6 @@ class BotService {
               normalizedMessage.match(/^\d{2}-\d{2}$/) ||
               normalizedMessage.match(/^\d{2}\/\d{2}$/)
             ) {
-              console.log("[BOT SERVICE] Entrou no step date");
               if (!sessionData.serviceIds) {
                 return 'Erro na sessão. Reinicie com "agendar".';
               }
@@ -261,12 +257,11 @@ class BotService {
             }
           } else if (sessionData.step === "time") {
             if (normalizedMessage.match(/^\d{2}:\d{2}$/)) {
-              console.log("[BOT SERVICE] Entrou no step time");
               if (!sessionData.serviceIds || !sessionData.date) {
                 return 'Erro na sessão. Reinicie com "agendar".';
               }
 
-              const professionalId = "653cf5e1-62f6-4651-8a3f-7a09d7b03749";
+              const professionalId = process.env.PROFESSIONAL_ID;
               const services = await Promise.all(
                 sessionData.serviceIds.map((id) => productService.getById(id)),
               );
@@ -343,7 +338,6 @@ class BotService {
           } else if (sessionData.step === "cancel_select") {
             const cleanMessage = message.toLowerCase().trim();
             // Verifica formato "DD-MM HH:MM"
-            console.log("[BOT SERVICE] Entrou no step cancel_select");
             if (cleanMessage.match(/^\d{2}-\d{2}\s+\d{2}:\d{2}$/)) {
               const [datePart, timePart] = cleanMessage
                 .split(/\s+/)
