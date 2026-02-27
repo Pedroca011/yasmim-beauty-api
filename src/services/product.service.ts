@@ -30,12 +30,16 @@ class ProductService {
   async getAllProduct(): Promise<Product[]> {
     const products = await productRepository.getAllProduct();
 
-    if (!products || products.length === 0) {
+    if (!products) {
       throw new HttpError({
         title: "NOT_FOUND",
         detail: "Nenhum produto encontrado.",
         code: 404,
       });
+    }
+
+    if (products.length === 0) {
+      return [];
     }
 
     return products;
