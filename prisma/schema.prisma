@@ -65,6 +65,7 @@ model Appointment {
 
   services Service[] @relation("AppointmentServices")
 
+  totalPrice Decimal @db.Decimal(10, 2)
   date       DateTime
   duration   Int
   status     StatusAppointment @default(SCHEDULED)

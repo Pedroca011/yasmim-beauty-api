@@ -6,13 +6,20 @@ class AppointmentController {
   async create(req: Request, res: Response) {
     try {
       const { clientId } = req.params;
-      const { professionalId, serviceIds, date, duration } = req.body;
+      const { professionalId, serviceIds, date, duration, totalPrice } =
+        req.body;
 
-      if (!professionalId || !serviceIds?.length || !date || !duration) {
+      if (
+        !professionalId ||
+        !serviceIds?.length ||
+        !date ||
+        !duration ||
+        totalPrice === undefined
+      ) {
         return res.status(400).json({
           title: "DADOS INVÁLIDOS",
           detail:
-            "Campos obrigatórios: professionalId, serviceIds, date, duration.",
+            "Campos obrigatórios: professionalId, serviceIds, date, duration, totalPrice.",
         });
       }
 
@@ -36,6 +43,7 @@ class AppointmentController {
         serviceIds,
         date,
         duration,
+        totalPrice,
       });
 
       return res.status(201).json({

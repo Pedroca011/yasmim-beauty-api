@@ -11,6 +11,7 @@ class AppointmentRepository {
         professionalId: data.professionalId,
         date: new Date(data.date),
         duration: data.duration,
+        totalPrice: data.totalPrice,
         services: {
           connect: data.serviceIds.map((id) => ({ id })),
         },

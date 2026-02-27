@@ -314,6 +314,7 @@ class BotService {
                 serviceIds: sessionData.serviceIds,
                 date: fullDate,
                 duration: totalDuration,
+                totalPrice
               });
 
               // formatar data e horario para não ficar com :00 a mais no final
