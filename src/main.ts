@@ -55,7 +55,7 @@ const StartServer = async () => {
   app.get("/", (_, res) => {
     res.status(200).json({
       success: true,
-      message: "Api test runner...",
+      message: "Api Yasmim runner...",
     });
   });
 

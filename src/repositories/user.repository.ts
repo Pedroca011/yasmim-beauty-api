@@ -17,15 +17,21 @@ class userRepository {
     }
   }
 
-  async createUser({ name, email, passwordHashed, phone, source }: IUserCreate & { source?: 'WEB' | 'WHATSAPP' }) {
+  async createUser({
+    name,
+    email,
+    passwordHashed,
+    phone,
+    source,
+  }: IUserCreate & { source?: "WEB" | "WHATSAPP" }) {
     const createdUser = await this.prisma.user.create({
       data: {
         name,
         email,
         password: passwordHashed,
-        role: 'USER',
+        role: "USER",
         phone,
-        source: source || 'WEB',  // Adicionado: Default para 'WEB' se não fornecido
+        source: source || "WEB", // Adicionado: Default para 'WEB' se não fornecido
       },
     });
 
@@ -37,6 +43,13 @@ class userRepository {
       where: { phone },
     });
     return foundPhone;
+  }
+
+  async findById(id: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+    });
+    return user;
   }
 }
 

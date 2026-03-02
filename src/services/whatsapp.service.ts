@@ -1,4 +1,3 @@
-
 import axios from "axios";
 
 class WhatsappService {
@@ -7,15 +6,18 @@ class WhatsappService {
   }
 
   private getBaseUrl(): string {
-    return (
-      process.env.EVOLUTION_API_URL || "http://localhost:8080"
-    ).replace(/\/$/, "");
+    return (process.env.EVOLUTION_API_URL || "http://localhost:8080").replace(
+      /\/$/,
+      "",
+    );
   }
 
   async sendText(remoteJid: string, text: string) {
     const instance = this.getEvolutionInstance();
     const baseUrl = this.getBaseUrl();
-    const number = remoteJid.includes("@") ? remoteJid.split("@")[0] : remoteJid;
+    const number = remoteJid.includes("@")
+      ? remoteJid.split("@")[0]
+      : remoteJid;
 
     const payload = {
       number: number,
@@ -40,7 +42,10 @@ class WhatsappService {
         },
       );
 
-      console.log("[WHATSAPP SERVICE] Texto enviado com sucesso:", response.data);
+      console.log(
+        "[WHATSAPP SERVICE] Texto enviado com sucesso:",
+        response.data,
+      );
       return response.data;
     } catch (error: any) {
       console.error(
@@ -59,7 +64,9 @@ class WhatsappService {
   ) {
     const instance = this.getEvolutionInstance();
     const baseUrl = this.getBaseUrl();
-    const number = remoteJid.includes("@") ? remoteJid.split("@")[0] : remoteJid;
+    const number = remoteJid.includes("@")
+      ? remoteJid.split("@")[0]
+      : remoteJid;
 
     const payload = {
       number: number,
@@ -91,7 +98,10 @@ class WhatsappService {
         },
       );
 
-      console.log("[WHATSAPP SERVICE] Botões enviados com sucesso:", response.data);
+      console.log(
+        "[WHATSAPP SERVICE] Botões enviados com sucesso:",
+        response.data,
+      );
       return response.data;
     } catch (error: any) {
       const errorDetail = error.response?.data || error.message;

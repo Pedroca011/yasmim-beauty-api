@@ -4,13 +4,19 @@ import { HttpError, PasswordHashed } from "../utils";
 
 class userService {
   // Renomeado de 'singUp' para 'signUp' (corrigindo typo)
-  async signUp({ name, email, password, phone, source = 'WEB' }: IUserCreate & { source?: 'WEB' | 'WHATSAPP' }) {
+  async signUp({
+    name,
+    email,
+    password,
+    phone,
+    source = "WEB",
+  }: IUserCreate & { source?: "WEB" | "WHATSAPP" }) {
     // Verificações condicionais: só checa email se fornecido, phone se fornecido
     if (email) {
       const verifyEmail = await userRepository.getByEmail(email);
       if (verifyEmail) {
         throw new HttpError({
-          title: "CONFLICT",  // Corrigido de 'CONFLIT'
+          title: "CONFLICT", // Corrigido de 'CONFLIT'
           detail: "Email já em uso",
           code: 409,
         });
@@ -31,10 +37,10 @@ class userService {
     let passwordHashed: string | undefined;
     if (password) {
       passwordHashed = await PasswordHashed(password);
-      if (!passwordHashed) {  
+      if (!passwordHashed) {
         throw new HttpError({
           title: "BAD_REQUEST",
-          detail: "Erro ao processar senha", 
+          detail: "Erro ao processar senha",
           code: 400,
         });
       }
@@ -45,7 +51,7 @@ class userService {
       email,
       passwordHashed,
       phone,
-      source,  
+      source,
     });
 
     return createdUser;
@@ -57,6 +63,10 @@ class userService {
     return user;
   }
 
+  async findById(id: string) {
+    return await userRepository.findById(id);
+  }
+
   // Método extra para bot: Cria ou encontra usuário via WhatsApp (sem email/senha)
   async getOrCreateFromBot({ name, phone }: { name: string; phone: string }) {
     let user = await this.findByPhone(phone);
@@ -64,7 +74,7 @@ class userService {
       user = await this.signUp({
         name,
         phone,
-        source: 'WHATSAPP', 
+        source: "WHATSAPP",
       });
     }
     return user;

@@ -367,14 +367,12 @@ class BotService {
                 );
               }
 
-              // Aqui está o erro: o método retorna ARRAY, então tratamos como tal
               const appointments =
                 await appointmentRepository.findByClientAndDate(
                   user.id,
                   targetDate,
                 );
 
-              // Verifica se encontrou pelo menos um e se não está cancelado
               const activeAppointment = appointments.find(
                 (a) => a.status !== StatusAppointment.CANCELED,
               );
@@ -408,8 +406,7 @@ class BotService {
               }
               const appointment =
                 await appointmentRepository.findAppointmentById(appointmentId);
-              const status = StatusAppointment.CANCELED;
-              await appointmentRepository.update(appointmentId, { status });
+              await appointmentService.cancel(appointmentId, user.id);
               await botRepository.deleteSession(remoteJid);
 
               // Notificar admin
